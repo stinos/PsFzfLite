@@ -1,4 +1,4 @@
-﻿<#
+<#
 .SYNOPSIS
 Pipe Get-Process into fzf, then into Stop-Process.
 #>

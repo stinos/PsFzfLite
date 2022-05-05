@@ -1,4 +1,4 @@
-﻿<#
+<#
 .SYNOPSIS
 Build source code into a dll in the temp directory.
 .DESCRIPTION
