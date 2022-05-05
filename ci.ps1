@@ -1,6 +1,7 @@
 Write-Host ($PSVersionTable | Out-String)
 Import-Module Pester
 $config = [PesterConfiguration]::Default
+$config.Run.Path = $PSScriptRoot
 $config.Run.PassThru = $True
 $config.TestResult.Enabled = $True
 $res = Invoke-Pester -Configuration $config
