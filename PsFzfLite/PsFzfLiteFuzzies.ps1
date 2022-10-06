@@ -32,6 +32,7 @@ function Invoke-FuzzyZLocation {
 Pipe Get-Command for non-PS types into fzf and insert result at cursor.
 .DESCRIPTION
 Use for fuzzy browsing any .exe in the PATH.
+If cursor is at the end of a word, that word is used as initial fzf query and replaced afterwards.
 .PARAMETER FzfArgs
 Additional arguments for fzf.
 .EXAMPLE
@@ -41,10 +42,11 @@ function Invoke-FuzzyGetCommand {
   param(
     [Parameter()] [Object[]] $FzfArgs = @()
   )
+  $FzfArgs, $fzfQuery = Get-InitialFzfQuery $FzfArgs
   Get-Command -CommandType Application |
     ForEach-Object {$_.Name} |
     fzf @FzfArgs |
-    Add-TextAtCursor
+    Write-FzfResult -FzfQuery $fzfQuery
 }
 
 <#
@@ -52,6 +54,7 @@ function Invoke-FuzzyGetCommand {
 Pipe Get-Command for PS types into fzf and insert result at cursor.
 .DESCRIPTION
 Use for fuzzy browsing PS commands.
+If cursor is at the end of a word, that word is used as initial fzf query and replaced afterwards.
 .PARAMETER FzfArgs
 Additional arguments for fzf.
 .EXAMPLE
@@ -61,6 +64,7 @@ function Invoke-FuzzyGetCmdlet {
   param(
     [Parameter()] [Object[]] $FzfArgs = @()
   )
+  $FzfArgs, $fzfQuery = Get-InitialFzfQuery $FzfArgs
   @(
     (Get-Command -CommandType Function -ListImported),
     (Get-Command -CommandType CmdLet -ListImported),
@@ -68,7 +72,7 @@ function Invoke-FuzzyGetCmdlet {
   ) |
     ForEach-Object {$_.Name} |
     fzf @FzfArgs |
-    Add-TextAtCursor
+    Write-FzfResult -FzfQuery $fzfQuery
 }
 
 <#
@@ -76,6 +80,7 @@ function Invoke-FuzzyGetCmdlet {
 Pipe PSReadLine history into fzf and insert result at cursor.
 .DESCRIPTION
 The typical Ctrl-R command.
+If cursor is at the end of a word, that word is used as initial fzf query and replaced afterwards.
 .PARAMETER FzfArgs
 Additional arguments for fzf.
 .EXAMPLE
@@ -91,9 +96,10 @@ function Invoke-FuzzyHistory {
     [Parameter()] [Object[]] $FzfArgs = @()
   )
   $FzfArgs += '--no-sort' # Get-UniqueReversedLines already has proper order.
+  $FzfArgs, $fzfQuery = Get-InitialFzfQuery $FzfArgs
   Get-UniqueReversedLines (Get-PSReadLineOption).HistorySavePath |
     fzf @fzfArgs |
-    Add-TextAtCursor
+    Write-FzfResult -FzfQuery $fzfQuery
 }
 
 <#

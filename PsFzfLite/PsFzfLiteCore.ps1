@@ -242,3 +242,63 @@ function Add-TextAtCursor {
     [Microsoft.PowerShell.PSConsoleReadLine]::Insert($Input)
   }
 }
+
+<#
+.SYNOPSIS
+Get word before cursor, and if any add it to the fzf args as initial query.
+.DESCRIPTION
+For use in conjunction with Write-FzfResult: for many key handlers using fzf it's
+equally convenient/matter of preference invoking fzf then starting to type the query,
+vs typing the query or a part of it then invoking fzf.
+This function gets the current line content and builds the --query argument with it
+into the given fzf arguments list; the query is considered the word before the cursor
+position; the cursor must be directly after the word, a space then a cursor does not
+treat the word before the space as query.
+.EXAMPLE
+$fzfArgs, $fzQuery = Get-InitalFzfQuery $fzfArgs
+fzf @fzfArgs | Write-FzfResult -FzfQuery $fzQuery
+.PARAMETER FzfArgs
+Additional arguments for fzf, can be empty.
+.OUTPUTS
+Updated FzfArgs and input object for Write-FzfResult.
+#>
+function Get-InitialFzfQuery {
+  param(
+    [Parameter()] [Object[]] $FzfArgs = @()
+  )
+  $line, $cursor = Get-ReadlineState
+  # Anything after cursor is irrelevant, treat full word before cursor as query,
+  # so index + 1 because word starts after the space found,
+  # and in case of no match i.e. -1 conveniently makes 0 as query start.
+  $queryIndex = $line.LastIndexOf(' ', $cursor) + 1
+  if ($queryIndex -gt $cursor) {
+    $queryIndex = $cursor
+  }
+  $queryLength = $cursor - $queryIndex
+  $query = $line.SubString($queryIndex, $queryLength).Trim()
+  # Could be cursor is at or after whitespace, so not an actual query.
+  if ($query) {
+    $FzfArgs += '--query'
+    $FzfArgs += $query
+  }
+  $FzfArgs, @($queryIndex, $queryLength)
+}
+
+<#
+.SYNOPSIS
+Replace query found by Get-InitalFzfQuery with fzf result, or just insert fzf result in case of empty query.
+.PARAMETER FzfResult
+The fzf return value. No replacement/insertion happens if this is empty.
+.PARAMETER $FzfQuery
+Second output of Get-InitalFzfQuery.
+#>
+function Write-FzfResult {
+  param(
+    [Parameter(ValueFromPipeline)] [Object] $FzfResult,
+    [Parameter(Mandatory)] [int[]] $FzfQuery
+  )
+  [Microsoft.PowerShell.PSConsoleReadLine]::InvokePrompt()
+  if ($FzfResult) {
+    [Microsoft.PowerShell.PSConsoleReadLine]::Replace($FzfQuery[0], $FzfQuery[1], $FzfResult)
+  }
+}

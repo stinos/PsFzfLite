@@ -26,7 +26,9 @@ Export-ModuleMember -Function @(
   'Get-UniqueReversedLines',
   'Get-ReadlineState',
   'Get-PathBeforeCursor',
-  'Add-TextAtCursor'
+  'Add-TextAtCursor',
+  'Get-InitialFzfQuery',
+  'Write-FzfResult'
 )
 
 if ($ModuleArguments.Binaries) {
