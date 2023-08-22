@@ -52,6 +52,9 @@ as start path and automatically selects directory finding if there's a `cd` or s
 - `Invoke-FuzzyZLocation` launch fzf with [ZLocation](https://github.com/vors/ZLocation) entries and
 cd to the selected directory, use for fast navigation between directories used often
 
+The easiest way to use these is binding them to keyboard shortcuts so they can be invoked quickly, plus
+first 3 will automatically pre-fill fzf input with the current commandline content. See samples below.
+
 Most of the functions have an argument for passing arguments to fzf in turn; these arguments are
 passed like one would type them on the commandline. Some examples:
 
@@ -79,7 +82,7 @@ Invoke-FuzzyGetCmdlet -FzfArgs @(
 
 ## Sample key bindings and aliases
 
-These are the key bindings fzf installs by default in shells like bash, put in `$PROFILE`:
+Key bindings like the ones fzf installs by default in other shells like bash, put in `$PROFILE`:
 
 ```powershell
 Set-PSReadLineKeyHandler -Key 'ctrl-r' -BriefDescription 'Fuzzy history' -ScriptBlock {Invoke-FuzzyHistory}
@@ -96,7 +99,8 @@ Set-Alias fkill Invoke-FuzzyKillProcess
 An alternative approach to aliasing is using `Invoke-FuzzyGetCmdlet` bound to a keyboard shortcut then use
 that for fuzzy command finding instead of typing aliases: it is usually about the same number of keystrokes to
 reach a command but doesn't require remembering the exact name and is generic. For example starting
-`Invoke-FuzzyGetCmdlet` and typing `fz` or `fk` fuzzy matches the functions shown above.
+`Invoke-FuzzyGetCmdlet` and typing `fz` or `fk` (or the other way around, i.e. typing `fz` or `fk` and then
+using the keyboard shortcut) fuzzy matches the functions shown above.
 
 ## Rationale and helper functions
 
