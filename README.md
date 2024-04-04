@@ -28,8 +28,8 @@ feeding a lot of output (like from listing the filesystem) into fzf makes it unu
 ## Installation
 
 ```powershell
-git clone https://github.com/stinos/PsFzfLite /path/to/PsFzfLite
-Import-Module /path/to/PsFzfLite
+git clone https://github.com/stinos/PsFzfLite ./PsFzfLite
+Import-Module ./PsFzfLite/PsFzfLite/PsFzfLite.psm1
 ```
 
 The import statement normally goes into `$PROFILE`.
