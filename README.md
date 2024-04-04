@@ -20,9 +20,9 @@ see [PsFzfLiteFuzzies.ps1](PsFzfLite/PsFzfLiteFuzzies.ps1).
 Powershell Core.
 
 Notes:
-- all code is compatible with PS 5.1 but that version buffers all output from an upstream command before
+- actually code is compatible with PS 5.1 but that version buffers all output from an upstream command before
 piping it into a downstream external program so without workarounds (which aren't implemented currently),
-feeding a lot of output (like from listing the filesystem) into fzf makes it unusable due to the wait time
+feeding lots of output (like from listing the filesystem) into fzf takes a considerable amount of time
 - all tests pass on Linux and all fuzzies have been tested as well, but not extensively. Not tested on macOS.
 
 ## Installation

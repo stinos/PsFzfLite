@@ -15,6 +15,12 @@ foreach ($item in $defaultArguments.GetEnumerator()) {
 
 Set-StrictMode -Version Latest
 
+if (-not (Test-Path variable:global:IsWindows)) {
+  $platform = [System.Environment]::OSVersion.Platform
+  $platformIsWindows = $platform -eq 'Win32NT' 
+  New-Variable -Option Constant -Name IsWindows -Value $platformIsWindows -Scope global
+}
+
 . (Join-Path $PSScriptRoot 'PsFzfLiteCore.ps1')
 
 Export-ModuleMember -Function @(
